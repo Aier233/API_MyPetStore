@@ -1,0 +1,140 @@
+package org.csu.mypetstore.api.service.imp;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.csu.mypetstore.api.entity.Item;
+import org.csu.mypetstore.api.entity.ItemInventory;
+import org.csu.mypetstore.api.persistence.ItemInventoryMapper;
+import org.csu.mypetstore.api.persistence.ItemMapper;
+import org.csu.mypetstore.api.vo.ItemVO;
+import org.csu.mypetstore.api.common.CommonResponse;
+import org.csu.mypetstore.api.entity.Category;
+import org.csu.mypetstore.api.entity.Product;
+import org.csu.mypetstore.api.persistence.CategoryMapper;
+import org.csu.mypetstore.api.persistence.ProductMapper;
+import org.csu.mypetstore.api.service.CatalogService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Description
+ * @Date 2022/3/27 1:39 下午
+ * @Author RessMatthew
+ * @Version 1.0
+ **/
+
+//写下面value为了自动注解提高效率
+@Service("catalogService")
+public class CatalogServiceImpl implements CatalogService {
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private ItemMapper itemMapper;
+
+    @Autowired
+    private ItemInventoryMapper itemInventoryMapper;
+
+    @Override
+    public CommonResponse<List<Category>> getCategoryList() {
+        List<Category> categoryList = categoryMapper.selectList(null);
+        if(categoryList.isEmpty()){
+            return CommonResponse.createForSuccessMessage("没有分类信息");
+        }
+        return CommonResponse.createForSuccess(categoryList);
+    }
+
+    @Override
+    public CommonResponse<Category> getCategoryById(String categoryId) {
+        Category category = categoryMapper.selectById(categoryId);
+        if(category==null){
+            return CommonResponse.createForSuccessMessage("没有该Id的category");
+        }
+        return CommonResponse.createForSuccess(category);
+    }
+
+    @Override
+    public CommonResponse<List<Product>> getProductListByCategoryId(String categoryId) {
+        QueryWrapper<Product> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("category",categoryId);
+
+        List<Product> productList = productMapper.selectList(queryWrapper);
+        if(productList.isEmpty()){
+            return CommonResponse.createForSuccessMessage("该分类下没有Product子类");
+        }
+        return CommonResponse.createForSuccess(productList);
+    }
+
+    @Override
+    public CommonResponse<Product> getProductById(String productId) {
+        Product product = productMapper.selectById(productId);
+        if(product==null){
+            return CommonResponse.createForSuccessMessage("没有该Id的product");
+        }
+        return CommonResponse.createForSuccess(product);
+    }
+
+    @Override
+    public CommonResponse<List<ItemVO>> getItemListByProductId(String productId) {
+        QueryWrapper<Item> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("productid",productId);
+        List<Item> itemList = itemMapper.selectList(queryWrapper);
+        if(itemList.isEmpty()){
+            return CommonResponse.createForSuccessMessage("该分类下没有Item子类");
+        }
+        Product product = productMapper.selectById(productId);
+        List<ItemVO> itemVOList = new ArrayList<>();
+
+        for(Item item:itemList){
+            ItemInventory itemInventory = itemInventoryMapper.selectById(item.getItemId());
+            ItemVO itemVO = itemToItemVO(item,product,itemInventory);
+            itemVOList.add(itemVO);
+        }
+
+        return CommonResponse.createForSuccess(itemVOList);
+    }
+
+    @Override
+    public CommonResponse<ItemVO> getItemById(String itemId) {
+        Item item = itemMapper.selectById(itemId);
+        if(item==null){
+            return CommonResponse.createForSuccessMessage("没有该Id的item");
+        }
+        Product product = productMapper.selectById(item.getProductId());
+        ItemInventory itemInventory = itemInventoryMapper.selectById(item.getItemId());
+
+        ItemVO itemVO =itemToItemVO(item,product,itemInventory);
+        return CommonResponse.createForSuccess(itemVO);
+    }
+
+
+    private ItemVO itemToItemVO(Item item,Product product,ItemInventory itemInventory){
+        ItemVO itemVO = new ItemVO();
+        itemVO.setItemId(item.getItemId());
+        itemVO.setProductId(item.getProductId());
+        itemVO.setListPrice(item.getListPrice());
+        itemVO.setUnitCost(item.getUnitCost());
+        itemVO.setSupplierId(item.getSupplierId());
+        itemVO.setStatus(item.getStatus());
+        itemVO.setAttribute1(item.getAttribute1());
+        itemVO.setAttribute2(item.getAttribute2());
+        itemVO.setAttribute3(item.getAttribute3());
+        itemVO.setAttribute4(item.getAttribute4());
+        itemVO.setAttribute5(item.getAttribute5());
+
+        itemVO.setCategoryId(product.getCategoryId());
+        itemVO.setProductName(product.getName());
+        itemVO.setProductDescription(product.getDescription());
+
+        itemVO.setQuantity(itemInventory.getQuantity());
+
+        return itemVO;
+    }
+
+}
