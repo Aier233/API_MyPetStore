@@ -4,8 +4,10 @@ import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.Category;
 import org.csu.mypetstore.api.entity.User;
 import org.csu.mypetstore.api.persistence.CategoryMapper;
+import org.csu.mypetstore.api.service.CartService;
 import org.csu.mypetstore.api.service.CatalogService;
 import org.csu.mypetstore.api.service.UserService;
+import org.csu.mypetstore.api.vo.CartItemVO;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ class MyPetStoreApiApplicationTests {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
     @Test
     void contextLoads() {
@@ -52,5 +57,11 @@ class MyPetStoreApiApplicationTests {
         System.out.println(userCommonResponse.getData().toString());
     }
 
+
+    @Test
+    void selectItemByUsernameTest(){
+        CommonResponse<List<CartItemVO>> listCommonResponse = cartService.selectItemByUsername("123");
+        System.out.println(listCommonResponse.getData());
+    }
 
 }

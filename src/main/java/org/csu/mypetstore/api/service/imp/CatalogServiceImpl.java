@@ -112,6 +112,18 @@ public class CatalogServiceImpl implements CatalogService {
         return CommonResponse.createForSuccess(itemVO);
     }
 
+    @Override
+    public ItemVO getItem(String itemId) {
+        Item item = itemMapper.selectById(itemId);
+//        if(item==null){
+//            return CommonResponse.createForSuccessMessage("没有该Id的item");
+//        }
+        Product product = productMapper.selectById(item.getProductId());
+        ItemInventory itemInventory = itemInventoryMapper.selectById(item.getItemId());
+        ItemVO itemVO =itemToItemVO(item,product,itemInventory);
+        return  itemVO;
+    }
+
 
     private ItemVO itemToItemVO(Item item,Product product,ItemInventory itemInventory){
         ItemVO itemVO = new ItemVO();

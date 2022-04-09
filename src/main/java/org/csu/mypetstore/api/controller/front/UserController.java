@@ -20,6 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //登入
     @PostMapping("login")
     @ResponseBody
     public CommonResponse<User> login(@RequestParam String username, @RequestParam String password, HttpSession session){
@@ -30,6 +31,7 @@ public class UserController {
         return response;
     }
 
+    //获得登入用户的用户信息
     @PostMapping("get_login_account_info")
     @ResponseBody
     public CommonResponse<User> getLoginAccountInfo(HttpSession session){
@@ -42,6 +44,7 @@ public class UserController {
         }
     }
 
+    //判断用户是否存在
     @GetMapping("/usernameIsExist")
     public void usernameIsExist(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
@@ -61,6 +64,7 @@ public class UserController {
         out.close();
     }
 
+    //退出
     @GetMapping("/signout")
     public void signout(HttpServletRequest request,HttpServletResponse response)throws IOException {
         response.setContentType("text/plain");
