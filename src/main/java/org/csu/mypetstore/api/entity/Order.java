@@ -40,40 +40,36 @@ public class Order {
 
     @TableField(value ="billcity" )
     private String billAddress2;
-    @TableField(value ="billstate" )
+    @TableField(value ="billcity" )
     private String billCity;
-    @TableField(value ="billzip" )
+    @TableField(value ="billstate" )
     private String billState;
-    @TableField(value ="billcountry" )
+    @TableField(value ="billzip" )
     private String billZip;
-    @TableField(value ="courier" )
+    @TableField(value ="billcountry" )
     private String billCountry;
 
 
-    @TableField(value ="totalprice" )
+    @TableField(value ="courier" )
     private String courier;
-    @TableField(value ="billtofirstname" )
+    @TableField(value ="totalprice" )
     private BigDecimal totalPrice;
-    @TableField(value ="billtolastname" )
+    @TableField(value ="billtofirstname" )
     private String billToFirstName;
-    @TableField(value ="orderdate" )
+    @TableField(value ="shiptolastname" )
     private String billToLastName;
-    @TableField(value ="orderdate" )
+    @TableField(value ="shiptofirstname" )
     private String shipToFirstName;
 
-    @TableField(value ="orderdate" )
+    @TableField(value ="shiptolastname" )
     private String shipToLastName;
-    @TableField(value ="orderdate" )
+    @TableField(value ="creditcard" )
     private String creditCard;
-    @TableField(value ="orderdate" )
+    @TableField(value ="exprdate" )
     private String expiryDate;
-    @TableField(value ="orderdate" )
+    @TableField(value ="cardtype" )
     private String cardType;
-    @TableField(value ="orderdate" )
+    @TableField(value ="locale" )
     private String locale;
-
-
-    @TableField(value ="orderdate" )
-    private String status;
 
 }
