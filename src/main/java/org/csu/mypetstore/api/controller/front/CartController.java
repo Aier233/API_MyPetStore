@@ -26,7 +26,7 @@ public class CartController {
     @ResponseBody
     public CommonResponse<List<CartItemVO>> selectItemByUsername(String username, HttpSession session){
 
-        CommonResponse<List<CartItemVO>> listCartItemVOResponse = cartService.selectItemByUsername(username);
+        CommonResponse<List<CartItemVO>> listCartItemVOResponse = cartService.selectItemByUsername(username,session);
         session.setAttribute("cart",listCartItemVOResponse.getData());
         return listCartItemVOResponse;
     }

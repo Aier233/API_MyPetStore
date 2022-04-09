@@ -3,6 +3,7 @@ package org.csu.mypetstore.api.service.imp;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.Cart;
+import org.csu.mypetstore.api.entity.User;
 import org.csu.mypetstore.api.persistence.CartMapper;
 import org.csu.mypetstore.api.service.CartService;
 import org.csu.mypetstore.api.service.CatalogService;
@@ -11,6 +12,7 @@ import org.csu.mypetstore.api.vo.ItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,7 +31,14 @@ public class CartServiceImpl implements CartService {
     //重构
     //通过用户名获得没有支付的购物车项目
     @Override
-    public CommonResponse<List<CartItemVO>> selectItemByUsername(String username) {
+    public CommonResponse<List<CartItemVO>> selectItemByUsername(String username,HttpSession session) {
+
+
+        User user = (User) session.getAttribute("user");
+        if(user==null){
+            return CommonResponse.createForNeedLogin("请先登录后再查看购物车");
+        }
+
         List<CartItemVO> cartItemList=new ArrayList<>();
 
         QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();

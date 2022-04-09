@@ -58,10 +58,10 @@ class MyPetStoreApiApplicationTests {
     }
 
 
-    @Test
-    void selectItemByUsernameTest(){
-        CommonResponse<List<CartItemVO>> listCommonResponse = cartService.selectItemByUsername("123");
-        System.out.println(listCommonResponse.getData());
-    }
+//    @Test
+//    void selectItemByUsernameTest(){
+//        CommonResponse<List<CartItemVO>> listCommonResponse = cartService.selectItemByUsername("123");
+//        System.out.println(listCommonResponse.getData());
+//    }
 
 }

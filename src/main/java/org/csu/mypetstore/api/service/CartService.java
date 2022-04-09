@@ -9,6 +9,8 @@ import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.vo.CartItemVO;
 import org.csu.mypetstore.api.vo.ItemVO;
 
+import javax.servlet.http.HttpSession;
+
 
 public interface CartService {
     void addItemByUsernameAndItemId(String username, ItemVO item,boolean isInStock);
@@ -21,7 +23,7 @@ public interface CartService {
 
     void updateItemByItemIdAndQuantity(String username, String itemId, int quantity);
 
-    CommonResponse<List<CartItemVO>> selectItemByUsername(String username);
+    CommonResponse<List<CartItemVO>> selectItemByUsername(String username,HttpSession session );
 
     void updateItemByItemIdAndPay(String username, String itemId, boolean pay);
 }
