@@ -58,6 +58,8 @@ public class CommonResponse<T> implements Serializable {
     public static <T> CommonResponse<T> createForSuccess(String msg,T data){
         return new CommonResponse<T>(ResponseCode.SUCCESS.getCode(),msg,data);
     }
+
+
     public static <T> CommonResponse<T> createForError(){
         return new CommonResponse<T>(ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDescription());
     }
@@ -66,5 +68,13 @@ public class CommonResponse<T> implements Serializable {
     }
     public static <T> CommonResponse<T> createForError(int code,String msg){
         return new CommonResponse<T>(code,msg);
+    }
+
+
+    public static <T> CommonResponse<T> createForNeedLogin(){
+        return new CommonResponse<T>(ResponseCode.NEED_LOGIN.getCode());
+    }
+    public static <T> CommonResponse<T> createForNeedLogin(String msg){
+        return new CommonResponse<T>(ResponseCode.NEED_LOGIN.getCode(),msg);
     }
 }
