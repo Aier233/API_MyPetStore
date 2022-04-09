@@ -108,7 +108,6 @@ public class CatalogServiceImpl implements CatalogService {
         }
         Product product = productMapper.selectById(item.getProductId());
         ItemInventory itemInventory = itemInventoryMapper.selectById(item.getItemId());
-
         ItemVO itemVO =itemToItemVO(item,product,itemInventory);
         return CommonResponse.createForSuccess(itemVO);
     }
@@ -131,7 +130,6 @@ public class CatalogServiceImpl implements CatalogService {
         itemVO.setCategoryId(product.getCategoryId());
         itemVO.setProductName(product.getName());
         itemVO.setProductDescription(product.getDescription());
-
         itemVO.setQuantity(itemInventory.getQuantity());
 
         return itemVO;
