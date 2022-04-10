@@ -38,7 +38,7 @@ public class Order {
     private String billAddress1;
 
 
-    @TableField(value ="billcity" )
+    @TableField(value ="billaddr2" )
     private String billAddress2;
     @TableField(value ="billcity" )
     private String billCity;
@@ -56,7 +56,7 @@ public class Order {
     private BigDecimal totalPrice;
     @TableField(value ="billtofirstname" )
     private String billToFirstName;
-    @TableField(value ="shiptolastname" )
+    @TableField(value ="billtolastname" )
     private String billToLastName;
     @TableField(value ="shiptofirstname" )
     private String shipToFirstName;

@@ -11,5 +11,7 @@ public interface OrderService {
 
     OrderVO getOrderVO(String orderId);
     int getNextOrderId();
+    void updateNextOrderId();
+    void InsertOrderVOToDB(OrderVO orderVO);
 
 }

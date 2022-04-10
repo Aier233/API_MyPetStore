@@ -34,7 +34,7 @@ public class CartServiceImpl implements CartService {
     public CommonResponse<List<CartItemVO>> selectItemByUsername(String username,HttpSession session) {
 
 
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("login_account");
         if(user==null){
             return CommonResponse.createForNeedLogin("请先登录后再查看购物车");
         }

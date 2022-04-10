@@ -47,7 +47,16 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.1</version>
         </dependency>
+
+        <!--        阿里支付接口-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.22.37.ALL</version>
+        </dependency>
     </dependencies>
+
+
 
 
 

@@ -76,4 +76,17 @@ class MyPetStoreApiApplicationTests {
 
     }
 
+    @Test
+    void updateNextOrderIdTest(){
+        orderService.updateNextOrderId();
+    }
+
+
+    @Test
+    void InsertOrderVOToDBTest(){
+        OrderVO orderVO = new OrderVO();
+
+        orderService.InsertOrderVOToDB(orderVO);
+    }
+
 }
