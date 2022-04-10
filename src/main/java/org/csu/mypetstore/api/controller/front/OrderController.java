@@ -3,6 +3,7 @@ package org.csu.mypetstore.api.controller.front;
 import com.alipay.api.AlipayApiException;
 import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.User;
+import org.csu.mypetstore.api.service.CartService;
 import org.csu.mypetstore.api.service.OrderService;
 import org.csu.mypetstore.api.service.PayService;
 import org.csu.mypetstore.api.vo.CartItemVO;
@@ -32,6 +33,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CartService cartService;
 
     @GetMapping("getOrder")
     @ResponseBody
@@ -154,6 +158,8 @@ public class OrderController {
         HttpSession session = request.getSession();
         OrderVO order = (OrderVO) session.getAttribute("order");
 
+        cartService.updateCartToPay(session);
+
         orderService.InsertOrderVOToDB(order);
 
 //        private String out_trade_no;/*商户订单号，必填*/
@@ -163,7 +169,7 @@ public class OrderController {
 
         return  payService.aliPay(new OrderVO()
                 .setBody(order.getUsername())
-                .setOut_trade_no(String.valueOf(order.getOrderId()))
+                .setOut_trade_no(String.valueOf(order.getOrderId())+Math.random() * 100)
                 .setTotal_amount(new StringBuffer().append(order.getTotalPrice()))
                 .setSubject("MyPetStore OrderId: "+order.getOrderId()));
     }

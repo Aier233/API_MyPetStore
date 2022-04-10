@@ -91,7 +91,7 @@ public class CartController {
 
 
 //        session.setAttribute("login_account",userService.findUserByUsername(username));
-//        CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
+        CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
 //        session.setAttribute("cart", listCartItemVOResponse.getData());
 //        System.out.println("........resp"+listCartItemVOResponse.getStatus());
 
@@ -115,7 +115,7 @@ public class CartController {
 //        CommonResponse<List<CartItemVO> > cart = cartService.selectItemByUsername(username,session);
 //        session.setAttribute("cart", cart.getData());
 
-
+        CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
 
 
     }

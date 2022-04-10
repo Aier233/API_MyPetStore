@@ -26,4 +26,6 @@ public interface CartService {
     CommonResponse<List<CartItemVO>> selectItemByUsername(String username,HttpSession session );
 
     void updateItemByItemIdAndPay(String username, String itemId, boolean pay);
+
+    void updateCartToPay(HttpSession session);
 }

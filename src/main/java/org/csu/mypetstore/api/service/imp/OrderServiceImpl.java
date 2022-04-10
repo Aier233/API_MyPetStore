@@ -4,10 +4,8 @@ import org.csu.mypetstore.api.entity.LineItem;
 import org.csu.mypetstore.api.entity.Order;
 import org.csu.mypetstore.api.entity.OrderStatus;
 import org.csu.mypetstore.api.entity.Sequence;
-import org.csu.mypetstore.api.persistence.LineItemMapper;
-import org.csu.mypetstore.api.persistence.OrderMapper;
-import org.csu.mypetstore.api.persistence.OrderStatusMapper;
-import org.csu.mypetstore.api.persistence.SequenceMapper;
+import org.csu.mypetstore.api.persistence.*;
+import org.csu.mypetstore.api.service.CartService;
 import org.csu.mypetstore.api.service.OrderService;
 import org.csu.mypetstore.api.vo.LineItemVO;
 import org.csu.mypetstore.api.vo.OrderVO;
@@ -22,6 +20,9 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
+    private CartService cartService;
+
+    @Autowired
     private OrderStatusMapper orderStatusMapper;
 
     @Autowired
@@ -32,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private LineItemMapper lineItemMapper;
-
 
     public OrderVO getOrderVO(String orderId){
 

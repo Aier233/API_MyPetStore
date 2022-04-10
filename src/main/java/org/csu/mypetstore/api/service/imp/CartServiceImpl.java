@@ -1,6 +1,7 @@
 package org.csu.mypetstore.api.service.imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.Cart;
 import org.csu.mypetstore.api.entity.User;
@@ -9,6 +10,7 @@ import org.csu.mypetstore.api.service.CartService;
 import org.csu.mypetstore.api.service.CatalogService;
 import org.csu.mypetstore.api.vo.CartItemVO;
 import org.csu.mypetstore.api.vo.ItemVO;
+import org.csu.mypetstore.api.vo.LineItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,9 +76,18 @@ public class CartServiceImpl implements CartService {
         return CommonResponse.createForSuccess(cartItemList);
     }
 
-
-
-
+    public void updateCartToPay(HttpSession session){
+        User user = (User) session.getAttribute("login_account");
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",user.getUsername());
+        List<Cart> cartList = cartMapper.selectList(queryWrapper);
+        Iterator<Cart> cartIterator = cartList.iterator();
+        while(cartIterator.hasNext()){
+            Cart cart = cartIterator.next();
+            cart.setPay(true);
+            cartMapper.updateById(cart);
+            }
+        }
 
 
     //未重构部分
@@ -92,16 +103,60 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemVO getCartItemByUsernameAndItemId(String username, String itemId) {
-        return null;
+
+        CartItemVO cartItemVO = new CartItemVO();
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        Cart cart = cartMapper.selectOne(queryWrapper);
+
+
+        cartItemVO.setItem(catalogService.getItem(itemId));
+        cartItemVO.setUsername(username);
+        cartItemVO.setInStock(cart.isInstock());
+        cartItemVO.setQuantity(cart.getQuantity());
+        cartItemVO.setTotal(cart.getTotalCost());
+
+        return cartItemVO;
+
     }
 
     @Override
     public void removeCartItemByUsernameAndItemId(String username, String itemId) {
 
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        cartMapper.delete(queryWrapper);
+
     }
 
     @Override
     public void updateItemByItemIdAndQuantity(String username, String itemId, int quantity) {
+
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        Cart cart = cartMapper.selectOne(queryWrapper);
+        cart.setQuantity(quantity);
+
+        CartItemVO cartItemVO = new CartItemVO();
+        cartItemVO.setItem(catalogService.getItem(itemId));
+        cartItemVO.updateQuantity(quantity);
+
+
+        cart.setTotalCost(cartItemVO.getTotal());
+        System.out.println(".............total"+cartItemVO.getTotal());
+
+        UpdateWrapper<Cart> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("username",username);
+        updateWrapper.eq("itemId",itemId);
+
+
+        cartMapper.update(cart,updateWrapper);
 
     }
 
@@ -109,4 +164,5 @@ public class CartServiceImpl implements CartService {
     public void updateItemByItemIdAndPay(String username, String itemId, boolean pay) {
 
     }
+
 }
