@@ -1,6 +1,7 @@
 package org.csu.mypetstore.api.service.imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.Cart;
 import org.csu.mypetstore.api.entity.User;
@@ -92,16 +93,60 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemVO getCartItemByUsernameAndItemId(String username, String itemId) {
-        return null;
+
+        CartItemVO cartItemVO = new CartItemVO();
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        Cart cart = cartMapper.selectOne(queryWrapper);
+
+
+        cartItemVO.setItem(catalogService.getItem(itemId));
+        cartItemVO.setUsername(username);
+        cartItemVO.setInStock(cart.isInstock());
+        cartItemVO.setQuantity(cart.getQuantity());
+        cartItemVO.setTotal(cart.getTotalCost());
+
+        return cartItemVO;
+
     }
 
     @Override
     public void removeCartItemByUsernameAndItemId(String username, String itemId) {
 
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        cartMapper.delete(queryWrapper);
+
     }
 
     @Override
     public void updateItemByItemIdAndQuantity(String username, String itemId, int quantity) {
+
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        Cart cart = cartMapper.selectOne(queryWrapper);
+        cart.setQuantity(quantity);
+
+        CartItemVO cartItemVO = new CartItemVO();
+        cartItemVO.setItem(catalogService.getItem(itemId));
+        cartItemVO.updateQuantity(quantity);
+
+
+        cart.setTotalCost(cartItemVO.getTotal());
+        System.out.println(".............total"+cartItemVO.getTotal());
+
+        UpdateWrapper<Cart> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("username",username);
+        updateWrapper.eq("itemId",itemId);
+
+
+        cartMapper.update(cart,updateWrapper);
 
     }
 
