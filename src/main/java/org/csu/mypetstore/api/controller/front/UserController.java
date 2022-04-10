@@ -65,15 +65,16 @@ public class UserController {
     }
 
     //退出
-    @GetMapping("/signout")
-    public void signout(HttpServletRequest request,HttpServletResponse response)throws IOException {
-        response.setContentType("text/plain");
-        PrintWriter out = response.getWriter();
+    @GetMapping("signout")
+    @ResponseBody
+    public CommonResponse<User> signout(HttpServletRequest request,HttpServletResponse response)throws IOException {
         if(request.getSession().getAttribute("login_account") != null) {
             request.getSession().removeAttribute("login_account");
-            out.print("Exit Success");
-            out.flush();
-            out.close();
+//            System.out.println("成功登出");
+            return CommonResponse.createForSuccessMessage("成功登出");
+        }else{
+//            System.out.println("用户不存在，无法登出");
+            return CommonResponse.createForError("当前用户不存在");
         }
     }
 
