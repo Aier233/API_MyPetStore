@@ -156,9 +156,14 @@ public class OrderController {
 
         orderService.InsertOrderVOToDB(order);
 
+//        private String out_trade_no;/*商户订单号，必填*/
+//        private String subject;/*订单名称，必填*/
+//        private StringBuffer total_amount;/*付款金额，必填*/
+//        private String body;/*商品描述，可空*/
+
         return  payService.aliPay(new OrderVO()
                 .setBody(order.getUsername())
-                .setOut_trade_no(order.getLineItems().get(0).getItemId())
+                .setOut_trade_no(String.valueOf(order.getOrderId()))
                 .setTotal_amount(new StringBuffer().append(order.getTotalPrice()))
                 .setSubject("MyPetStore OrderId: "+order.getOrderId()));
     }

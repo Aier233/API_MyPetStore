@@ -54,6 +54,12 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>4.22.37.ALL</version>
         </dependency>
+
+        <!-- md5 依赖 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
     </dependencies>
 
 
