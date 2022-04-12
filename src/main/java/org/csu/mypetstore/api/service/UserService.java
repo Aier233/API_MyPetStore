@@ -12,4 +12,6 @@ public interface UserService {
     CommonResponse<User> getAccountByUsernameAndPassword(String username,String password);
     User findUserByUsername(String username);
     CommonResponse<User> getLoginAccountInfo(HttpSession session);
+    CommonResponse<User> updateUser(User user);
+    CommonResponse<User> insertUser(User user);
 }

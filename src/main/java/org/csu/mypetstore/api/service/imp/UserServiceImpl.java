@@ -52,4 +52,26 @@ public class UserServiceImpl implements UserService {
     public CommonResponse<User> getLoginAccountInfo(HttpSession session) {
         return null;
     }
+
+    @Override
+    public CommonResponse<User> updateUser(User user) {
+        if(user.getUsername()==null||user.getPassword()==null){
+            return CommonResponse.createForSuccessMessage("用户名或密码不能为空");
+        }else{
+            userMapper.updateById(user);//根据id选择修改的user
+            return CommonResponse.createForSuccess(user);
+        }
+    }
+
+    @Override
+    public CommonResponse<User> insertUser(User user) {
+        if(user.getUsername()==null||user.getPassword()==null){
+            return CommonResponse.createForSuccessMessage("用户名或密码不能为空");
+        }else{
+            userMapper.insert(user);
+            return CommonResponse.createForSuccess(user);//用户插入成功
+        }
+    }
 }
+
+
