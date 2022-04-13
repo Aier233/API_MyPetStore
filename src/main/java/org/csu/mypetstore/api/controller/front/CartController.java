@@ -46,7 +46,7 @@ public class CartController {
 
         CommonResponse<List<CartItemVO>> listCartItemVOResponse = cartService.selectItemByUsername(username,session);
         session.setAttribute("cart",listCartItemVOResponse.getData());
-        System.out.println("........resp"+listCartItemVOResponse.getStatus());
+//        System.out.println("........resp"+listCartItemVOResponse.getStatus());
         return listCartItemVOResponse;
     }
 
@@ -83,15 +83,16 @@ public class CartController {
                 cartService.updateItemByItemIdAndQuantity(username, itemId, quantity);
                 CartItemVO item = cartService.getCartItemByUsernameAndItemId(username, itemId);
                 String html = "<fmt:formatNumber type='number' pattern='$#,##0.00'>$" + item.getTotal() + "</fmt:formatNumber>";
-                System.out.println("html"+html);
+//                System.out.println("html"+html);
                 out.write("{\"isRemoved\":\"" + false + "\",\"itemId\":\"" + itemId + "\",\"quantity\":\"" + quantity +
                         "\",\"totalcost\":\"" + item.getTotal() + "\",\"html\":\"" + html + "\"}");
             }
         }
 
 
-//        session.setAttribute("login_account",userService.findUserByUsername(username));
         CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
+
+//        session.setAttribute("login_account",userService.findUserByUsername(username));
 //        session.setAttribute("cart", listCartItemVOResponse.getData());
 //        System.out.println("........resp"+listCartItemVOResponse.getStatus());
 
@@ -111,11 +112,12 @@ public class CartController {
             cartService.removeCartItemByUsernameAndItemId(username,itemId);
         }
 
+
+        CommonResponse<List<CartItemVO> > cart = cartService.selectItemByUsername(username,session);
 //        session.setAttribute("login_account",userService.findUserByUsername(username));
-//        CommonResponse<List<CartItemVO> > cart = cartService.selectItemByUsername(username,session);
 //        session.setAttribute("cart", cart.getData());
 
-        CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
+
 
 
     }

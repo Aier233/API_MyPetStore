@@ -27,7 +27,9 @@ public class UserController {
     //登入
     @PostMapping("login")
     @ResponseBody
-    public CommonResponse<User> login(@RequestParam String username, @RequestParam String password, HttpSession session){
+    public CommonResponse<User> login(@RequestParam String username, @RequestParam String password,HttpSession session){
+
+        String msg = null;
         CommonResponse<User> response = userService.getAccountByUsernameAndPassword(username,password);
         if(response.isSuccess()){
             session.setAttribute("login_account",response.getData());
@@ -158,7 +160,7 @@ public class UserController {
     //验证码
     //todo:将值显示到前端
     @GetMapping("authCode")
-    public String authCode(HttpServletRequest request, HttpServletResponse response,Integer number) throws IOException {
+    public void authCode(HttpSession session, HttpServletResponse response,Integer number) throws IOException {
         AuthCodeUtil authCodeUtil=new AuthCodeUtil();
         BufferedImage image = new BufferedImage(authCodeUtil.WIDTH,authCodeUtil.HEIGHT,BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
@@ -172,14 +174,23 @@ public class UserController {
         System.out.println("*******************************************");
 
 
-        request.getSession().setAttribute("authCode",authCode);
+        session.setAttribute("authCode",authCode);
         response.setContentType("image/jpeg");
         response.setHeader("Pragma","no-cache");
         response.setHeader("Cache-control","no-cache");
         response.setIntHeader("Expires",-1);
         g.dispose();
         ImageIO.write(image,"JPEG",response.getOutputStream());
-        return null;
+
     }
+    @GetMapping("getAuthCode")
+    @ResponseBody
+    public CommonResponse<User> getAuthCode(HttpSession session){
+        String authCode = (String)session.getAttribute("authCode");
+//        System.out.println(authCode);
+        if (authCode==null)return CommonResponse.createForError("验证码未创建");
+        else return CommonResponse.createForSuccessMessage(authCode);
+    }
+
 }
 
