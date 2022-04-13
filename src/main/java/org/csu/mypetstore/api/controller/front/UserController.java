@@ -1,9 +1,11 @@
 package org.csu.mypetstore.api.controller.front;
 
+import com.zhenzi.sms.ZhenziSmsClient;
 import org.csu.mypetstore.api.common.CommonResponse;
 import org.csu.mypetstore.api.entity.User;
 import org.csu.mypetstore.api.service.UserService;
 import org.csu.mypetstore.api.util.AuthCodeUtil;
+import org.csu.mypetstore.api.util.RandomNumberUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/account/")
@@ -157,7 +161,7 @@ public class UserController {
         return response;
     }
 
-    //验证码
+    //图片验证码
     //todo:将值显示到前端
     @GetMapping("authCode")
     public void authCode(HttpSession session, HttpServletResponse response,Integer number) throws IOException {
@@ -183,6 +187,8 @@ public class UserController {
         ImageIO.write(image,"JPEG",response.getOutputStream());
 
     }
+
+    //获取图片验证码
     @GetMapping("getAuthCode")
     @ResponseBody
     public CommonResponse<User> getAuthCode(HttpSession session){
@@ -191,6 +197,77 @@ public class UserController {
         if (authCode==null)return CommonResponse.createForError("验证码未创建");
         else return CommonResponse.createForSuccessMessage(authCode);
     }
+
+    //生成并发送手机验证码（手机登录）
+    @PostMapping("phoneVCode")
+    @ResponseBody
+    public CommonResponse phoneCode(HttpServletRequest request,String phoneNumber){
+
+//        System.out.println("1");
+//        System.out.println(phoneNumber);
+
+        String apiUrl = "https://sms_developer.zhenzikj.com";
+        String appId  = "111103";
+        String appSecret = "761719c1-e3cc-41dc-9074-01744465caad";
+        String reminder = null;
+        String vCode = null;
+
+        try{
+            vCode = RandomNumberUtil.getRandomNumber();
+
+            ZhenziSmsClient client = new ZhenziSmsClient(apiUrl, appId, appSecret);
+
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("number", phoneNumber);
+            params.put("templateId", "8485");
+            String[] templateParams = new String[1];
+            templateParams[0] = vCode;
+            System.out.println(vCode);
+            params.put("templateParams", templateParams);
+            String result = client.send(params);
+
+            reminder = "验证码发送成功";
+            request.setAttribute("reminder",reminder);
+            request.getSession().setAttribute("vCode",vCode);
+
+            System.out.println(result);
+
+            return CommonResponse.createForSuccessMessage("验证码已成功发送，请注意查收！");
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error","验证码发送失败");
+            return CommonResponse.createForError("出了点问题，请刷新页面后重试！");
+        }
+    }
+
+    //手机号登陆
+    @PostMapping("signinPhone")
+    @ResponseBody
+    public CommonResponse signinPhone(HttpSession session,String phoneNumber,String username,String inputVCode){
+        String phoneVCode = (String)session.getAttribute("vCode");
+        if(phoneVCode==null)return CommonResponse.createForSuccessMessage("验证码未创建");
+        else {
+
+            User user = userService.findUserByUsername(username);
+            if(user==null){
+                return CommonResponse.createForSuccessMessage("查无此人");
+            }else if (!phoneNumber.equals(user.getPhone())){
+                return CommonResponse.createForSuccessMessage("用户名与手机号不匹配");
+            }else if(!inputVCode.equals(phoneVCode)){
+                return CommonResponse.createForSuccessMessage("手机验证码有误，请重新输入！");
+            }else {
+                session.setAttribute("login_account",user);
+                return CommonResponse.createForSuccessMessage("登录成功");
+            }
+
+        }
+
+
+    }
+
+
+
 
 }
 

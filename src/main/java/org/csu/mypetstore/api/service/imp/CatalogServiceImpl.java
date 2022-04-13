@@ -146,5 +146,12 @@ public class CatalogServiceImpl implements CatalogService {
 
         return itemVO;
     }
+    @Override
+    public boolean isItemInStock(String itemId){
+        QueryWrapper<ItemInventory> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("itemId",itemId);
+        ItemInventory itemInventory = itemInventoryMapper.selectOne(queryWrapper);
+        return itemInventory.getQuantity()>0;
+    }
 
 }

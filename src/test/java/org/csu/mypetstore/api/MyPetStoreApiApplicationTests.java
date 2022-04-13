@@ -89,4 +89,18 @@ class MyPetStoreApiApplicationTests {
         orderService.InsertOrderVOToDB(orderVO);
     }
 
+    @Test
+    void updateItemByItemIdAndPay(){
+        cartService.updateItemByItemIdAndPay("123","EST-20",false);
+    }
+
+    @Test
+    void addItemByUsernameAndItemId(){
+        cartService.addItemByUsernameAndItemId(
+                "123",
+                catalogService.getItem("EST-27"),
+                catalogService.isItemInStock("EST-27")
+        );
+    }
+
 }
