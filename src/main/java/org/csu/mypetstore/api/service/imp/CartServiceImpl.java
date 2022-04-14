@@ -93,13 +93,32 @@ public class CartServiceImpl implements CartService {
 
     //未重构部分
     @Override
-    public void addItemByUsernameAndItemId(String username, ItemVO item, boolean isInStock) {
+    public void addItemByUsernameAndItemId(String username, ItemVO itemVO, boolean isInStock) {
+
+        CartItemVO cartItemVO = new CartItemVO();
+        cartItemVO.setUsername(username);
+        cartItemVO.setItem(itemVO);
+        cartItemVO.setQuantity(0);
+        cartItemVO.setInStock(isInStock);
+        cartItemVO.incrementQuantity();
+
+        Cart cart = new Cart();
+        cart.setUsername(username);
+        cart.setItemId(itemVO.getItemId());
+        cart.setInstock(cartItemVO.isInStock());
+        cart.setQuantity(cartItemVO.getQuantity());
+        cart.setTotalCost(cartItemVO.getTotal());
+
+        cartMapper.insert(cart);
 
     }
 
     @Override
     public void incrementItemByUsernameAndItemId(String username, String itemId) {
-
+        CartItemVO cartItemVO = getCartItemByUsernameAndItemId(username,itemId);
+        cartItemVO.setItem(catalogService.getItem(itemId));
+        cartItemVO.incrementQuantity();
+        updateItemByItemIdAndQuantity(username,itemId,cartItemVO.getQuantity());
     }
 
     @Override
@@ -112,9 +131,11 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = cartMapper.selectOne(queryWrapper);
 
+        if(cart==null)return null;
 
         cartItemVO.setItem(catalogService.getItem(itemId));
         cartItemVO.setUsername(username);
+        cartItemVO.setPay(cart.getPay());
         cartItemVO.setInStock(cart.isInstock());
         cartItemVO.setQuantity(cart.getQuantity());
         cartItemVO.setTotal(cart.getTotalCost());
@@ -150,12 +171,11 @@ public class CartServiceImpl implements CartService {
 
 
         cart.setTotalCost(cartItemVO.getTotal());
-        System.out.println(".............total"+cartItemVO.getTotal());
+//        System.out.println(".............total"+cartItemVO.getTotal());
 
         UpdateWrapper<Cart> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("username",username);
         updateWrapper.eq("itemId",itemId);
-
 
         cartMapper.update(cart,updateWrapper);
 
@@ -163,6 +183,19 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void updateItemByItemIdAndPay(String username, String itemId, boolean pay) {
+
+        QueryWrapper<Cart> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("itemId",itemId);
+
+        Cart cart = cartMapper.selectOne(queryWrapper);
+        cart.setPay(pay);
+
+        UpdateWrapper<Cart> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("username",username);
+        updateWrapper.eq("itemId",itemId);
+
+        cartMapper.update(cart,updateWrapper);
 
     }
 
