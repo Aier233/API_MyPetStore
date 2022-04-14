@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description
@@ -123,6 +124,24 @@ public class CatalogServiceImpl implements CatalogService {
         ItemVO itemVO =itemToItemVO(item,product,itemInventory);
         return  itemVO;
     }
+
+    @Override
+    public CommonResponse<List<Product>> searchProductList(String keyword){
+
+        keyword = "%"+keyword.toLowerCase()+"%";
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("name",keyword);
+
+        List<Product> productList = productMapper.selectList(queryWrapper);
+
+        if(productList.isEmpty()){
+            return CommonResponse.createForSuccessMessage("未搜寻到结果");
+        }else {
+            return CommonResponse.createForSuccess(productList);
+        }
+
+    }
+
 
 
     private ItemVO itemToItemVO(Item item,Product product,ItemInventory itemInventory){
