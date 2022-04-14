@@ -28,4 +28,6 @@ public interface CartService {
     void updateItemByItemIdAndPay(String username, String itemId, boolean pay);
 
     void updateCartToPay(HttpSession session);
+
+    void addItem(String username, BigDecimal listPrice, String itemId);
 }

@@ -30,6 +30,7 @@ public class CartServiceImpl implements CartService {
     private CatalogService catalogService;
 
 
+
     //重构
     //通过用户名获得没有支付的购物车项目
     @Override
@@ -164,5 +165,18 @@ public class CartServiceImpl implements CartService {
     public void updateItemByItemIdAndPay(String username, String itemId, boolean pay) {
 
     }
+
+
+    public void addItem(String username, BigDecimal listPrice, String itemId) {
+        Cart cart = new Cart();
+        cart.setUsername(username);
+        cart.setItemId(itemId);
+        cart.setInstock(true);
+        cart.setQuantity(1);
+        cart.setTotalCost(listPrice);
+        cart.setPay(false);
+        cartMapper.insert(cart);
+    }
+
 
 }

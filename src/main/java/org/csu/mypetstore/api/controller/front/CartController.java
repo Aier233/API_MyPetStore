@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -116,8 +117,25 @@ public class CartController {
 //        session.setAttribute("cart", cart.getData());
 
         CommonResponse<List<CartItemVO>> listCartItemVOResponse = selectItemByUsername(username,session);
+    }
 
 
+    @GetMapping("addItemTocart")
+    @ResponseBody
+    public void addItemTocart(String itemId,HttpServletRequest request,HttpServletResponse response) throws IOException {
+
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        User account = (User)session.getAttribute("login_account");
+
+
+
+        CommonResponse<ItemVO> itemById = catalogService.getItemById(itemId);
+        BigDecimal listPrice = itemById.getData().getListPrice();
+        cartService.addItem(account.getUsername(),listPrice,itemById.getData().getItemId());
+        out.write("success");
+        out.flush();
+        out.close();
     }
 
 
