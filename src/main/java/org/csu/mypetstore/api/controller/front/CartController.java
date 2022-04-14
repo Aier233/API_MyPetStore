@@ -115,8 +115,11 @@ public class CartController {
 
     @GetMapping("/addItemToCart")
     @ResponseBody
-    public CommonResponse addItemToCart(String username,String workingItemId,HttpSession session){
+    public CommonResponse addItemToCart(String workingItemId,HttpSession session){
 
+
+        User loginAccount = (User) session.getAttribute("login_account");
+        String username = loginAccount.getUsername();
         CartItemVO cartItemVO = cartService.getCartItemByUsernameAndItemId(username, workingItemId);
 
         if (cartItemVO != null) {
