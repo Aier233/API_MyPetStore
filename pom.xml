@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.csu</groupId>
     <artifactId>MyPetStore_API</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>MyPetStore_API</name>
     <description>MyPetStore_API</description>
     <properties>
