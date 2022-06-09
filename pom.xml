@@ -8,6 +8,7 @@
         <version>2.6.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    //dont touch~
     <groupId>org.csu</groupId>
     <artifactId>MyPetStore_API</artifactId>
     <version>1.0</version>
